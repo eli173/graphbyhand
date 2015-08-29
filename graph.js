@@ -13,7 +13,7 @@ evt = null;
 
 main = function() {
     var canvas = new fabric.Canvas("surface",{backgroundColor:'white'});
-//    canvas.add(Edge({x1:44,y1:44,x2:88,y2:88,fill:'red',stroke:'red'}))
+
     canvas.on('mouse:down',function(o){mousedown(o,canvas)});
 }
 
@@ -43,13 +43,6 @@ var mousedown = function(options,canvas) {
 				     x2:options.target.left,
 				     y2:options.target.top,
 				     vertices:vertices});
-		canvas.add(new fabric.Rect({
-		    left:Math.min(curr_vert.left,options.target.left),
-		    top:Math.min(curr_vert.top,options.target.top),
-		    width:Math.abs(curr_vert.left-options.target.left),
-		    height:Math.abs(curr_vert.top-options.target.top),
-		    fill:'green'
-		}));
 		curr_vert = null;
 		canvas.add(edge);
 		canvas.sendToBack(edge);
@@ -94,14 +87,16 @@ var Edge = fabric.util.createClass(fabric.Line, {
     type: 'Edge',
     initialize: function(options) {
 	options || (options = { });
-	this.callSuper('initialize',
+	y1 = options.y1||0;
+	x1 = options.x1||0;
+	y2 = options.y2||0;
+	x2 = options.x2||0;
+	arr = [x1,y1,x2,y2];
+	this.callSuper('initialize',arr,
 		       {stroke:e_color,strokeWidth:e_width,
-			selectable:false});
-	// this.set({'vertices':options.vertices||[]});
-	// this.set({'x1':options.x1||0});
-	// this.set({'x2':options.x2||0});
-	// this.set({'y1':options.y1||0});
-	// this.set({'y2':options.y2||0});
+			selectable:false,
+			originX:'center',
+			originY:'center'});
     },
     toObject: function() {
 	return fabric.util.object.extend(this.callSuper('toObject'), {
