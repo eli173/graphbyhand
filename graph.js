@@ -12,6 +12,7 @@ e_counter = 0;
 
 mode = 'v'
 curr_vert = null;
+curr_ed = null;
 
 evt = null;
 
@@ -48,8 +49,6 @@ var mousedown = function(options,canvas) {
 				   y:options.e.pageY});
 	    canvas.add(vert);
 	    canvas.bringToFront(vert);
-	    console.log(vert)
-	    console.log(options.e.pageY-v_radius)
 	}
 	break;
     case 'e':
@@ -69,21 +68,24 @@ var mousedown = function(options,canvas) {
 		curr_vert = null;
 		canvas.add(edge);
 		canvas.sendToBack(edge);
-		console.log(edge);
-		console.log(options.target.left)
 	    }
 	}
 	break;
     case 's':
+	if(options.target && options.target.type == 'Vertex') {
+	    curr_ed = options.target;
+	    document.getElementById("label").value = curr_ed.label;
+	    document.getElementById("editor").style.display = "block";
+	    
+	}
 	break;
     case 'd':
 	if(options.target) {
-	    if(options.target.type=='Edge') {
-		canvas.remove(options.target);
+	    if(options.target.type=='Vertex') {
+		edges = getEdges(options.target,canvas);
+		edges.map(function(e){canvas.remove(e);});
 	    }
-	    else { // it's a vertex...
-		edges = []
-	    }
+	    canvas.remove(options.target);
 	}
 	break;
     default:
@@ -93,10 +95,45 @@ var mousedown = function(options,canvas) {
     canvas.renderAll();
 };
 
+var submit = function() {
+    var label = document.getElementById('label').value;
+    labelVertex(curr_ed,label);
+}
+
 var labelVertex = function(vert,label) {
     vert.set({'label':label});
 }
 
+var getEdges = function(vert,canvas) {
+    edges = [];
+    canvas.forEachObject(function(o) {
+	if(o.type == 'Edge' && o.vertices != []) {
+	    if(o.vertices[0]==vert) {
+		edges.push(o);
+	    }
+	    else if(o.vertices[1]==vert) {
+		edges.push(o);
+	    }
+	}
+    });
+    return edges;//here too
+}
+
+var getNeighbors = function(vert,canvas) {
+    neighbors = [];
+    canvas.forEachObject(function(o) {
+	// here
+	if(o.type == 'Edge' && o.vertices!=[]) {
+	    if(o.vertices[0]==vert) {
+		neighbors.push(o.vertices[1]);
+	    }
+	    else if(o.vertices[1]==vert) {
+		neighbors.push(o.vertices[0]);
+	    }
+	}
+    });
+    return neighbors;
+}
 
 var Vertex = fabric.util.createClass(fabric.Circle, {
     type: 'Vertex',
