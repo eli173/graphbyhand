@@ -16,13 +16,20 @@ curr_ed = null;
 
 evt = null;
 
-main = function() {
+var main = function() {
     var canvas = new fabric.Canvas("surface",{backgroundColor:'white'});
 
     canvas.on('mouse:down',function(o){mousedown(o,canvas)});
     canvas.on('object:moving',function(o){movement(o,canvas)});
 }
 
+
+var setMode = function(ch) {
+    mode = ch;
+    if(mode!='s') {
+	document.getElementById("editor").style.display = "none";
+    }
+}
 
 var movement = function(options,canvas) {
     vert = options.target;
@@ -75,6 +82,14 @@ var mousedown = function(options,canvas) {
 	if(options.target && options.target.type == 'Vertex') {
 	    curr_ed = options.target;
 	    document.getElementById("label").value = curr_ed.label;
+	    document.getElementById("elementid").innerHTML = curr_ed.id;
+	    neighbors = getNeighbors(curr_ed,canvas);
+	    nbrstrs = []
+	    neighbors.map(function(e) {
+		nbrstrs.push("Label: "+e.label+", id:"+e.id+"<br/>");
+	    });
+	    nbstring = nbrstrs.join('\n');
+	    document.getElementById("neighbors").innerHTML = nbstring;
 	    document.getElementById("editor").style.display = "block";
 	    
 	}
@@ -147,6 +162,7 @@ var Vertex = fabric.util.createClass(fabric.Circle, {
 	this.set({'edges':options.edges||[]});
 	this.set({'hasControls':false});
 	this.set({'hasBorders':false});
+	this.id = v_counter++;
     },
     toObject: function() {
 	return fabric.util.object.extend(this.callSuper('toObject'), {

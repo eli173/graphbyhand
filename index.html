@@ -13,14 +13,15 @@
       <canvas id="surface" width="1000" height="300"></canvas>
     </div>
     <div id="buttons">
-      <button onclick="mode = 'v'">Place Vertices</button>
-      <button onclick="mode = 'e'">Place Edges</button>
-      <button onclick="mode = 's'">Select</button>
-      <button onclick="mode = 'd'">Remove</button>
+      <button onclick="setMode('v')">Place Vertices</button>
+      <button onclick="setMode('e')">Place Edges</button>
+      <button onclick="setMode('s')">Select</button>
+      <button onclick="setMode('d')">Remove</button>
     </div>
     <div id="editor" style="display: none">
       Label: <input id="label" type="text" value=""/>
-      Neighbors: <div id="neighbors"></div>
+      ID: <div style="display:inline-block" id="elementid"></div><br/>
+      Neighbors: <div id="neighbors"></div><br/>
       <input id="submitlabel" type="button" value="OK" onclick="submit()"/>
     </div>
   </body>
