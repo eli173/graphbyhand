@@ -6,6 +6,10 @@ v_color = 'red'
 e_width = 5
 e_color = 'black'
 
+v_counter = 0;
+e_counter = 0;
+
+
 mode = 'v'
 curr_vert = null;
 
@@ -15,8 +19,25 @@ main = function() {
     var canvas = new fabric.Canvas("surface",{backgroundColor:'white'});
 
     canvas.on('mouse:down',function(o){mousedown(o,canvas)});
+    canvas.on('object:moving',function(o){movement(o,canvas)});
 }
 
+
+var movement = function(options,canvas) {
+    vert = options.target;
+    edges = [];
+    canvas.forEachObject(function (o) {
+	if(o.type == 'Edge' && o.vertices.indexOf(vert)!=-1) {
+	    if(o.vertices.indexOf(vert)==0) {
+		o.set({'x1':vert.left,'y1':vert.top});
+	    }
+	    else {
+		o.set({'x2':vert.left,'y2':vert.top});
+	    }
+	}
+    });
+    canvas.renderAll();
+};
 
 var mousedown = function(options,canvas) {
     evt = options
@@ -35,9 +56,11 @@ var mousedown = function(options,canvas) {
 	if(options.target && options.target.type=='Vertex') {
 	    if(curr_vert==null) {
 		curr_vert = options.target;
+		curr_vert.set({'fill':'orange'});
 	    }
 	    else {
-		vertices = [options.target, curr_vert]
+		curr_vert.set({'fill':'red'});
+		vertices = [curr_vert,options.target];
 		var edge = new Edge({x1:curr_vert.left,
 				     y1:curr_vert.top,
 				     x2:options.target.left,
@@ -51,6 +74,18 @@ var mousedown = function(options,canvas) {
 	    }
 	}
 	break;
+    case 's':
+	break;
+    case 'd':
+	if(options.target) {
+	    if(options.target.type=='Edge') {
+		canvas.remove(options.target);
+	    }
+	    else { // it's a vertex...
+		edges = []
+	    }
+	}
+	break;
     default:
 	break;
     
@@ -58,6 +93,9 @@ var mousedown = function(options,canvas) {
     canvas.renderAll();
 };
 
+var labelVertex = function(vert,label) {
+    vert.set({'label':label});
+}
 
 
 var Vertex = fabric.util.createClass(fabric.Circle, {
@@ -80,6 +118,9 @@ var Vertex = fabric.util.createClass(fabric.Circle, {
     },
     _render: function(ctx) {
 	this.callSuper('_render',ctx);
+    },
+    add_edge: function(edge) {
+	this.set({'edges':this.edges.push(edge)});
     }
 });
 
@@ -97,6 +138,8 @@ var Edge = fabric.util.createClass(fabric.Line, {
 			selectable:false,
 			originX:'center',
 			originY:'center'});
+	this.vertices = options.vertices||[];
+	this.id = e_counter++;
     },
     toObject: function() {
 	return fabric.util.object.extend(this.callSuper('toObject'), {
