@@ -21,6 +21,14 @@ var main = function() {
 
     canvas.on('mouse:down',function(o){mousedown(o,canvas)});
     canvas.on('object:moving',function(o){movement(o,canvas)});
+    document.getElementById("fmt").onclick = function(e) {
+	ezformatter(canvas);
+    }
+    document.getElementById("label").onkeypress = function(e) {
+	if(e.key="Enter") {
+	    submit()
+	}
+    };
 }
 
 
@@ -148,6 +156,53 @@ var getNeighbors = function(vert,canvas) {
 	}
     });
     return neighbors;
+}
+
+var ezformatter = function(canvas) {
+    var retstr = "";
+    var useedges = document.getElementById("radioedge").checked;
+    var useids = document.getElementById("idlblid").checked;
+    canvas.forEachObject(function(o) {
+	if(useedges && o.type == 'Edge') {
+	    console.log("a");
+	    if(!useids) {
+		retstr = retstr.concat("("+o.vertices[0].label+
+				       ", "+o.vertices[1].label+") ");
+	    }
+	    else {
+		retstr = retstr.concat("("+o.vertices[0].id+
+				       ", "+o.vertices[1].id+") ");
+	    }
+	}
+	else if(o.type == 'Vertex') {
+	    
+	    
+	}
+    });
+    document.getElementById("results").value = retstr;
+    document.getElementById("results").style.display = "block";
+}
+
+var runformatter = function(canvas) {
+    retstr = "";
+    fstr = document.getElementById("formatstr").value;
+    var in_escape = false;
+    for(i=0;i<fstr.length;i++) {
+	if(in_escape) {
+	    if(fstr[i]=='\\') {
+		retstr.push('\\')
+	    }
+	    else if(fstr[i]=='{') {
+		retstr.push('a');
+	    }
+
+	    in_escape = false;
+	}
+	
+
+    }
+    
+    console.log(retstr);
 }
 
 var Vertex = fabric.util.createClass(fabric.Circle, {
