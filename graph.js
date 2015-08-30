@@ -1,7 +1,7 @@
 
 
 
-v_radius = 10;
+v_radius = 7;
 v_color = 'red'
 e_width = 5
 e_color = 'black'
@@ -160,50 +160,41 @@ var getNeighbors = function(vert,canvas) {
 
 var ezformatter = function(canvas) {
     var retstr = "";
-    var useedges = document.getElementById("radioedge").checked;
+    vertstr = "V = {";
+    edgestr = "E = ";
     var useids = document.getElementById("idlblid").checked;
     canvas.forEachObject(function(o) {
-	if(useedges && o.type == 'Edge') {
-	    console.log("a");
-	    if(!useids) {
-		retstr = retstr.concat("("+o.vertices[0].label+
-				       ", "+o.vertices[1].label+") ");
+	if(o.type=='Vertex') {
+	    if(useids) {
+		vertstr = vertstr.concat(o.id+", ");
 	    }
 	    else {
-		retstr = retstr.concat("("+o.vertices[0].id+
-				       ", "+o.vertices[1].id+") ");
+		vertstr = vertstr.concat(o.label+", ");
 	    }
 	}
-	else if(o.type == 'Vertex') {
-	    
-	    
+	else { // edge
+	    if(useids) {
+		edgestr = edgestr.concat("{"+o.vertices[0].id+", "+
+					 o.vertices[1].id+"}, ");
+	    }
+	    else {
+		edgestr = edgestr.concat("{"+o.vertices[0].label+
+					 ","+o.vertices[1].label+"}, ");
+	    }
 	}
     });
+    if(vertstr!="V = {") {
+	vertstr = vertstr.slice(0,-2);
+    }
+    vertstr = vertstr.concat("}");
+    if(edgestr!="E = ") {
+	edgestr = edgestr.slice(0,-2);
+    }
+    retstr = vertstr + "\n" + edgestr;
     document.getElementById("results").value = retstr;
     document.getElementById("results").style.display = "block";
 }
 
-var runformatter = function(canvas) {
-    retstr = "";
-    fstr = document.getElementById("formatstr").value;
-    var in_escape = false;
-    for(i=0;i<fstr.length;i++) {
-	if(in_escape) {
-	    if(fstr[i]=='\\') {
-		retstr.push('\\')
-	    }
-	    else if(fstr[i]=='{') {
-		retstr.push('a');
-	    }
-
-	    in_escape = false;
-	}
-	
-
-    }
-    
-    console.log(retstr);
-}
 
 var Vertex = fabric.util.createClass(fabric.Circle, {
     type: 'Vertex',

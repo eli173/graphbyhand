@@ -29,21 +29,15 @@
     </div>
     <div id="formatter">
       Formatter<br/>
-      <input type="radio" name="eorv"
-	     id="radiovert">
-      <label for="radiovert">Run on vertices</label>
-      <input type="radio" name="eorv"
-	     id="radioedge">
-      <label for="radioedge">Run on edges</label><br/>
       <input type="radio" name="idolbl"
 	     id="idlblid">
-      <label for="idlblid">Use automatically generated IDs</label>
+      <label for="idlblid">Use automatically generated IDs</label><br/>
       <input type="radio" name="idolbl"
-	     id="idlbllbl">
+	     id="idlbllbl" checked="checked">
       <label for="idlbllbl">Use user-given labels</label><br/>
-      <textarea name="formatstr" id="formatstr"></textarea><br/>
-      <button id="fmt">Format</button><br/>
-      <textarea name="results" id="results" style="display:none"></textarea>
+      <button id="fmt">Get representation</button><br/>
+      <textarea name="results" id="results" rows="10" cols="50" style="display:none"></textarea>
+      note: in order to get proper results when using user-provided labels, it's essential that you label each vertex uniquely.
     </div>
   </body>
 </html>
