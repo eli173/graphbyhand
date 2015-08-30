@@ -1,0 +1,13 @@
+
+
+## Graph by Hand
+
+https://eli173.github.io/graphbyhand
+
+This tool allows you to bypass tedious input of vertices and edges for your graphs and instead use drawing tools to create your graph on a canvas, which you can then export to a nice representation that can likely be dropped into your code with only trivial modifications.
+
+An example output:
+```
+V = {1, 2, 3, 4}
+E = {1, 2}, {3, 4}, {2, 4}
+```
