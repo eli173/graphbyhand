@@ -1,9 +1,9 @@
 
 
 
-v_radius = 7;
+v_radius = 10;
 v_color = 'red'
-e_width = 5
+e_width = 7
 e_color = 'black'
 
 v_counter = 0;
