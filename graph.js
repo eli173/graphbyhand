@@ -24,6 +24,12 @@ var main = function() {
     document.getElementById("fmt").onclick = function(e) {
 	ezformatter(canvas);
     }
+    document.getElementById("dot").onclick = function(e) {
+	dot_format(canvas);
+    }
+    document.getElementById("ddl").onclick = function(e) {
+	dot_file(canvas);
+    }
     document.getElementById("label").onkeypress = function(e) {
 	if(e.key="Enter") {
 	    submit()
@@ -195,6 +201,38 @@ var ezformatter = function(canvas) {
     document.getElementById("results").style.display = "block";
 }
 
+
+var dot_format = function(canvas) {
+    dot_str = dot_format_str(canvas);
+    document.getElementById("results").value = dot_str;
+    document.getElementById("results").style.display = "block";
+
+}
+
+var dot_file = function(canvas) {
+    var dot_str = dot_format_str(canvas);
+    var a = window.document.createElement('a');
+    a.href = window.URL.createObjectURL(new Blob([dot_str],{type: 'text/plain'}));
+    a.download = 'js_generated.dot';
+    a.style.display = "block";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+}
+
+var dot_format_str = function(canvas) {
+    var retstr = "graph output {\n"
+    var useids = document.getElementById("idlblid").checked;
+    canvas.forEachObject(function(o) {
+	if(o.type=='Edge') {
+	    retstr = retstr.concat("\t"+o.vertices[0].id+" -- "
+				   +o.vertices[1].id+";\n");
+	}
+    });
+    retstr = retstr.concat("}");
+    return retstr;
+}
 
 var Vertex = fabric.util.createClass(fabric.Circle, {
     type: 'Vertex',
